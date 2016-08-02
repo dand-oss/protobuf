@@ -129,7 +129,7 @@ else (protobuf_BUILD_SHARED_LIBS)
         string(REGEX REPLACE "/MD" "/MT" ${flag_var} "${${flag_var}}")
       endif(${flag_var} MATCHES "/MD")
     endforeach(flag_var)
-  endif (MSVC AND protobuf_MSVC_STATIC_RUNTIME)
+  endif (ASV_NO_WAY AND MSVC AND protobuf_MSVC_STATIC_RUNTIME)
 endif (protobuf_BUILD_SHARED_LIBS)
 
 if (MSVC)
