@@ -110,11 +110,19 @@ install(EXPORT protobuf-targets
   NAMESPACE protobuf::
   COMPONENT protobuf-export)
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_CMAKEDIR}/
-  DESTINATION "${CMAKE_INSTALL_CMAKEDIR}"
-  COMPONENT protobuf-export
-  PATTERN protobuf-targets.cmake EXCLUDE
-)
+if(NOT MSVC)
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/cmake/${CMAKE_INSTALL_CMAKEDIR}/
+      DESTINATION "${CMAKE_INSTALL_CMAKEDIR}"
+      COMPONENT protobuf-export
+      PATTERN protobuf-targets.cmake EXCLUDE
+    )
+else(NOT MSVC)
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_CMAKEDIR}/
+      DESTINATION "${CMAKE_INSTALL_CMAKEDIR}"
+      COMPONENT protobuf-export
+      PATTERN protobuf-targets.cmake EXCLUDE
+    )
+endif(NOT MSVC)
 
 option(protobuf_INSTALL_EXAMPLES "Install the examples folder" OFF)
 if(protobuf_INSTALL_EXAMPLES)
