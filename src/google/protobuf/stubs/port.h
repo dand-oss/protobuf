@@ -68,13 +68,19 @@
 #endif
 #if defined(_MSC_VER) && defined(PROTOBUF_USE_DLLS)
   #ifdef LIBPROTOBUF_EXPORTS
+    // set in libprotobuf
     #define LIBPROTOBUF_EXPORT __declspec(dllexport)
   #else
+    // set in compiler
+    // set in client
     #define LIBPROTOBUF_EXPORT __declspec(dllimport)
   #endif
   #ifdef LIBPROTOC_EXPORTS
+    // set in compiler
     #define LIBPROTOC_EXPORT   __declspec(dllexport)
   #else
+    // runs this one inside
+    // set in client
     #define LIBPROTOC_EXPORT   __declspec(dllimport)
   #endif
 #else
