@@ -8,7 +8,7 @@ include(asv_cmake_defaults)
 asv_cmake_defaults( )
 ###############
 
-set (BUILD_SHARED_LIBS 0)
+set (BUILD_SHARED_LIBS 1)
 set (protobuf_BUILD_TESTS OFF)
 
 add_subdirectory(cmake)
