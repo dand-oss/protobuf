@@ -23,6 +23,13 @@ endif()
 # Project
 project(protobuf C CXX)
 
+###############
+# ASI default settings
+list(APPEND CMAKE_MODULE_PATH "$ENV{ASV_CMAKE}")
+include(asv_cmake_defaults)
+asv_cmake_defaults( )
+###############
+
 if(protobuf_DEPRECATED_CMAKE_SUBDIRECTORY_USAGE)
   if(CMAKE_PROJECT_NAME STREQUAL "protobuf")
     get_filename_component(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR} DIRECTORY)
