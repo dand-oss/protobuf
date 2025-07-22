@@ -174,7 +174,8 @@ find_package(Threads REQUIRED)
 
 set(_protobuf_FIND_ZLIB)
 if (protobuf_WITH_ZLIB)
-  find_package(ZLIB)
+    list(APPEND CMAKE_PREFIX_PATH $ENV{ASV_PLAT_PORTS}/zlib-ng)
+    find_package(ZLIB CONFIG)
   if (ZLIB_FOUND)
     set(HAVE_ZLIB 1)
     # FindZLIB module define ZLIB_INCLUDE_DIRS variable
