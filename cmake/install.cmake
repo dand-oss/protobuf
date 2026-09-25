@@ -10,6 +10,22 @@ if (protobuf_BUILD_LIBPROTOC)
     list(APPEND _protobuf_libraries libprotoc)
 endif (protobuf_BUILD_LIBPROTOC)
 
+# ASI: zlib-ng is a separate ports package (<ports>/zlib-ng/lib), so $ORIGIN alone does not
+# find libz for libprotobuf and protoc; they then run only when LD_LIBRARY_PATH lists it.
+# Add zlib's lib dir relative to our install dirs so the ports tree stays relocatable.
+set(_asv_zlib_rpath_lib "")
+set(_asv_zlib_rpath_bin "")
+if (UNIX AND NOT APPLE AND HAVE_ZLIB AND ZLIB_DIR)
+  get_filename_component(_asv_zlib_libdir "${ZLIB_DIR}/../.." REALPATH)
+  get_filename_component(_asv_prefix "${CMAKE_INSTALL_PREFIX}" REALPATH)
+  file(RELATIVE_PATH _asv_rel_lib "${_asv_prefix}/${CMAKE_INSTALL_LIBDIR}" "${_asv_zlib_libdir}")
+  file(RELATIVE_PATH _asv_rel_bin "${_asv_prefix}/${CMAKE_INSTALL_BINDIR}" "${_asv_zlib_libdir}")
+  if (NOT _asv_rel_lib STREQUAL "")
+    set(_asv_zlib_rpath_lib "$ORIGIN/${_asv_rel_lib}")
+    set(_asv_zlib_rpath_bin "$ORIGIN/${_asv_rel_bin}")
+  endif()
+endif()
+
 foreach(_library ${_protobuf_libraries})
   set_property(TARGET ${_library}
     PROPERTY INTERFACE_INCLUDE_DIRECTORIES
@@ -17,7 +33,7 @@ foreach(_library ${_protobuf_libraries})
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
   if (UNIX AND NOT APPLE)
     set_property(TARGET ${_library}
-      PROPERTY INSTALL_RPATH "$ORIGIN")
+      PROPERTY INSTALL_RPATH "$ORIGIN" ${_asv_zlib_rpath_lib})
   elseif (APPLE)
     set_property(TARGET ${_library}
       PROPERTY INSTALL_RPATH "@loader_path")
@@ -34,7 +50,7 @@ if (protobuf_BUILD_PROTOC_BINARIES)
     BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT protoc)
   if (UNIX AND NOT APPLE)
     set_property(TARGET protoc
-      PROPERTY INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
+      PROPERTY INSTALL_RPATH "$ORIGIN/../${CMAKE_INSTALL_LIBDIR}" ${_asv_zlib_rpath_bin})
   elseif (APPLE)
     set_property(TARGET protoc
       PROPERTY INSTALL_RPATH "@loader_path/../lib")
